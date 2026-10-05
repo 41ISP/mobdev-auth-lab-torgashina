@@ -1,8 +1,23 @@
+import { useEffect, useState } from 'react'
 import ItemCard from '../components/ItemCard'
+import { api } from '../api/api'
 
 const ItemsList = () => {
-    const items = []
+    const [items, setItems] = useState([])
+    const [error, setError] = useState("")
 
+    useEffect(() => {
+        const getItems = async () => {
+            try {
+                const data = await api.getItems()
+                setItems(data.data)
+            } catch (error) {
+                setError(error.response.data.error)
+                console.error(error)
+            }
+        }
+        getItems()
+    }, [])
     return (
         <div className="container">
             <div class="page-header">
