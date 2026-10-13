@@ -47,7 +47,7 @@ const Register = () => {
                 <div class="alert alert-error" id="error-alert">
                     Такое имя пользователя уже занято
                 </div>
-                {error.length > 0 && <div className="auth-error">{error}</div>}
+                {error && <div className="alert alert-error active">{error}</div>}
                 <form id="register-form" onSubmit={handleSubmit}>
                     <div class="form-group">
                         <label class="form-label">Имя пользователя</label>

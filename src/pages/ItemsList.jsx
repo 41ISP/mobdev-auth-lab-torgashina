@@ -1,22 +1,25 @@
 import { useEffect, useState } from 'react'
 import ItemCard from '../components/ItemCard'
 import { api } from '../api/api'
+import { useItemStore } from '../store/useItemStore'
 
 const ItemsList = () => {
-    const [items, setItems] = useState([])
-    const [error, setError] = useState("")
+    const items = useItemStore((state) => state.items)
+    const getItems = useItemStore((state) => state.getItems)
+    const [stats, setStats] = useState(null)
 
     useEffect(() => {
-        const getItems = async () => {
+        getItems()
+
+        const loadStats = async () => {
             try {
-                const data = await api.getItems()
-                setItems(data.data)
+                const data = await api.getStats()
+                setStats(data)
             } catch (error) {
-                setError(error.response.data.error)
                 console.error(error)
             }
         }
-        getItems()
+        loadStats()
     }, [])
     return (
         <div className="container">
