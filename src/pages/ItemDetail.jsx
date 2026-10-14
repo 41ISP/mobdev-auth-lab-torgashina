@@ -12,24 +12,31 @@ const ItemDetail = () => {
     const { session } = useUserStore()
     const getItems = useItemStore((state) => state.getItems)
     const [item, setItem] = useState(undefined)
+    const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
     const [bids, setBids] = useState([])
 
     const load = async () => {
+        setIsLoading(true)
         try {
             setItem((await api.getItems(id)).data)
         } catch (err) {
             console.error(error)
             setError(error.message || "Что-то пошло не так")
+        } finally {
+            setIsLoading(false)
         }
     }
 
     const loadBids = async () => {
+        setIsLoading(true)
         try {
             setBids((await api.getItemBids(id)).data)
         } catch (err) {
             console.error(err)
             setError(error.message || "Что-то пошло не так")
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -74,26 +81,17 @@ const ItemDetail = () => {
         }
     }
 
-    if (!item) {
-        return (
-            <div className="container">
-                {error ? (
-                    <div className="alert alert-error active">{error}</div>
-                ) : (
-                    "Загрузка..."
-                )}
-            </div>
-        )
-    }
+    if (!item) return <div className="container">Загрузка...</div>
 
     const isOwner = session?.user?.id === item.userId
-
+    
     return (
         <div className="container">
             <Link to={"/"}>← Вернуться к списку товаров</Link>
 
             <div className="item-detail">
-                {error && <div className="alert alert-error active">{error}</div>}
+                {!isLoading && error && (
+                    <div className="alert alert-error active">{error}</div>)}
 
                 <div className="item-header">
                     <div>
@@ -143,9 +141,7 @@ const ItemDetail = () => {
                             </form>
 
                             {isOwner && (
-                                <Button type="button" onClick={handleDelete}>
-                                    Удалить товар
-                                </Button>
+                                <Button type="button" onClick={handleDelete}>Удалить товар</Button>
                             )}
                         </div>
                     </div>
