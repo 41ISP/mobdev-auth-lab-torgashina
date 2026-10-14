@@ -24,7 +24,7 @@ const CreateItem = () => {
         } catch (error) {
             console.error(error)
         }
-
+    }
         return (
             <div className="container">
                 <div class="page-header">
